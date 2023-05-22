@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Pressable } from "react-native";
+import { StyleSheet, Image, Pressable, SafeAreaView } from "react-native";
 import { View, Text } from "../../../components/Themed";
 import posts from "../../../assets/data/posts";
 import { Post as PostType } from "../../../types";
@@ -10,7 +10,7 @@ interface PostProps {
 
 const Post = ({ post }: PostProps) => {
   return (
-    <View
+    <SafeAreaView
       style={{
         padding: 10,
         borderBottomWidth: StyleSheet.hairlineWidth,
@@ -52,7 +52,7 @@ const Post = ({ post }: PostProps) => {
           <Text style={styles.statsLabel}>{post.impressions || 0}</Text>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

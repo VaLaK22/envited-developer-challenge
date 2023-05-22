@@ -1,7 +1,14 @@
 import { Text, View } from "../../components/Themed";
-import { StyleSheet, TextInput, SafeAreaView, Pressable } from "react-native";
+import {
+  StyleSheet,
+  TextInput,
+  SafeAreaView,
+  Pressable,
+  StatusBar,
+} from "react-native";
 import { useState } from "react";
 import { Link, useRouter } from "expo-router";
+import { AntDesign } from "@expo/vector-icons";
 
 const user = {
   id: "u1",
@@ -31,18 +38,37 @@ const NewPost = () => {
         </Pressable>
       </View>
       <View style={styles.inputContainer}>
+        <Text>Write a specific title</Text>
         <TextInput
           placeholder={
-            "Write a specific title \n\nKeep it relevant. If the community flags your post for going off topic it will be invisible to the communtiy. \n\n\n@  Tag Company / Job Title"
+            "Keep it relevant. If the community flags your post for going off topic it will be invisible to the communtiy."
           }
           placeholderTextColor="#fff"
           multiline={true}
-          numberOfLines={10}
-          style={styles.input}
+          numberOfLines={3}
+          style={styles.textArea}
           value={post}
           onChangeText={setPost}
         />
+        <TextInput
+          placeholder={
+            "Keep it relevant. If the community flags your post for going off topic it will be invisible to the communtiy."
+          }
+          placeholderTextColor="#fff"
+          multiline={true}
+          numberOfLines={5}
+          style={styles.textArea}
+          value={post}
+          onChangeText={setPost}
+        />
+        <Text>Choose a community</Text>
       </View>
+      <Link href="/modal" asChild>
+        <Pressable style={styles.floatingButton}>
+          <AntDesign name="plus" size={24} color="gray" />
+          <Text>Create an Offer or Poll</Text>
+        </Pressable>
+      </Link>
     </SafeAreaView>
   );
 };
@@ -61,15 +87,40 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   inputContainer: {
-    height: "70%",
+    height: "75%",
     width: "100%",
-    flexDirection: "row",
+    flexDirection: "column",
   },
-  input: {
-    flex: 1,
+  textArea: {
+    height: "25%",
     color: "white",
+    flex: 1,
     padding: 10,
     textAlignVertical: "top",
+    borderBottomColor: "gray",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    lineHeight: 25,
+  },
+  floatingButton: {
+    flexDirection: "row",
+    height: 50,
+    backgroundColor: "#1B1B1B",
+    borderRadius: 50,
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 7,
+    },
+    shadowOpacity: 0.43,
+    shadowRadius: 9.51,
+
+    elevation: 15,
   },
 });
 

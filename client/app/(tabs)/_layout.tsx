@@ -1,19 +1,18 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Tabs } from "expo-router";
-import { Button, Pressable, useColorScheme } from "react-native";
-import { Text } from "../../components/Themed";
-
+import {
+  Ionicons,
+  AntDesign,
+  FontAwesome,
+  Entypo,
+  Foundation,
+  Octicons,
+} from "@expo/vector-icons";
+import { Tabs } from "expo-router";
+import { useColorScheme } from "react-native";
 import Colors from "../../constants/Colors";
 
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+export const unstable_settings = {
+  initialRouteName: "home",
+};
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -22,35 +21,69 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarInactiveTintColor: Colors[colorScheme ?? "light"].tabIconDefault,
+        tabBarStyle: {
+          height: 53,
+        },
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
-          title: "Tab One",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? "light"].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
+          headerShown: false,
+          title: "Home",
+          tabBarIcon: ({ color }) => (
+            <Foundation name="home" color={color} size={24} />
           ),
         }}
       />
-
+      <Tabs.Screen
+        name="company"
+        options={{
+          headerShown: false,
+          title: "Company",
+          tabBarIcon: ({ color }) => (
+            <Octicons name="organization" color={color} size={24} />
+          ),
+        }}
+      />
       <Tabs.Screen
         name="two"
         options={{
-          title: "",
           headerShown: false,
+          title: "",
+          tabBarIconStyle: {
+            marginTop: 10,
+          },
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="pluscircleo" color="#E97171" size={28} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          headerShown: false,
+          title: "Notifications",
+          tabBarIconStyle: {
+            marginTop: 10,
+          },
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="notifications-outline" color={color} size={24} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="more"
+        options={{
+          headerShown: false,
+          title: "More",
+          tabBarIconStyle: {
+            marginTop: 10,
+          },
+          tabBarIcon: ({ color }) => (
+            <Entypo name="dots-three-horizontal" color={color} size={24} />
+          ),
         }}
       />
     </Tabs>
