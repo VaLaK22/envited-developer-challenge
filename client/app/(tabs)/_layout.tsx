@@ -50,17 +50,7 @@ export default function TabLayout() {
         name="two"
         options={{
           title: "",
-          headerLeft: () => (
-            <Link href="/" asChild>
-              <Pressable>{({ pressed }) => <Text>Cancel</Text>}</Pressable>
-            </Link>
-          ),
-
-          headerRight: () => (
-            <Link href="/" asChild>
-              <Pressable>{({ pressed }) => <Text>Post</Text>}</Pressable>
-            </Link>
-          ),
+          headerShown: false,
         }}
       />
     </Tabs>
