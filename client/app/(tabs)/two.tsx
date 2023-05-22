@@ -1,31 +1,47 @@
-import { StyleSheet } from 'react-native';
+import { Text, View } from "../../components/Themed";
+import { StyleSheet, TextInput } from "react-native";
 
-import EditScreenInfo from '../../components/EditScreenInfo';
-import { Text, View } from '../../components/Themed';
+const user = {
+  id: "u1",
+  username: "sahil",
+  name: "Sahil Kumar",
+  image: "https://i.imgur.com/3tjWJ3c.jpeg",
+};
 
-export default function TabTwoScreen() {
+const NewPost = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/two.tsx" />
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder={
+            "Write a specific title \n\nKeep it relevant. If the community flags your post for going off topic it will be invisible to the communtiy. \n\n\n@  Tag Company / Job Title"
+          }
+          placeholderTextColor="#fff"
+          multiline={true}
+          numberOfLines={10}
+          style={styles.input}
+        />
+      </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 10,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  inputContainer: {
+    height: "70%",
+    width: "100%",
+    flexDirection: "row",
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  input: {
+    flex: 1,
+    color: "white",
+    padding: 10,
+    textAlignVertical: "top",
   },
 });
+
+export default NewPost;
