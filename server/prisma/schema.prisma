@@ -77,7 +77,7 @@ model Post {
   user      User?     @relation(fields: [userId], references: [id])
   userId    String?   @db.ObjectId
   comments  Comment[]
-  tag       String
+  tag       String?
   poll      Poll?     @relation(fields: [pollId], references: [id])
   likes     Int       @default(0)
   views     Int       @default(0)

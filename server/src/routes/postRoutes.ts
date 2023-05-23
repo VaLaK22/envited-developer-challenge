@@ -13,6 +13,9 @@ router.post("/", async (req, res) => {
   const user = req.user;
   const { id } = user;
 
+  console.log("req.body", req.body);
+  console.log("poll", poll);
+
   try {
     const result = await prisma.post.create({
       data: {
