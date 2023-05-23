@@ -55,6 +55,7 @@ router.get("/home", async (req, res) => {
           image: true,
         },
       },
+      poll: true,
     },
   });
   res.json(allPosts);
@@ -73,6 +74,7 @@ router.get("/popular", async (req, res) => {
             image: true,
           },
         },
+        poll: true,
       },
       orderBy: [
         {
@@ -98,7 +100,7 @@ router.get("/id/:id", async (req, res) => {
 
   const post = await prisma.post.findUnique({
     where: { id: id },
-    include: { user: true },
+    include: { user: true, comments: true, poll: true },
   });
   if (!post) {
     return res.status(404).json({ error: "post not found!" });
