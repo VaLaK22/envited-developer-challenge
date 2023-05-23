@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 
 // Create post
 router.post("/", async (req, res) => {
-  const { content, image, tags, poll } = req.body;
+  const { content, image, tag, poll } = req.body;
   // @ts-ignore
   const user = req.user;
   const { id } = user;
@@ -18,7 +18,7 @@ router.post("/", async (req, res) => {
       data: {
         content,
         image,
-        tags,
+        tag,
         poll: {
           create: {
             options: {
