@@ -5,10 +5,15 @@ import {
   SafeAreaView,
   Pressable,
   StatusBar,
+  ActivityIndicator,
 } from "react-native";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
+import { useMutation } from "@tanstack/react-query";
+import { createPost } from "../../lib/api/posts";
+import { Post as postType } from "../../types";
+import MyContext from "../../store/poll-context";
 
 const user = {
   id: "u1",
@@ -18,13 +23,39 @@ const user = {
 };
 
 const NewPost = () => {
-  const [post, setPost] = useState("");
+  const [post, setPost] = useState<postType>();
+  const { isChecked, fields, rest } = useContext(MyContext);
+
   const router = useRouter();
+
+  const { mutate, isError, isPending, error } = useMutation({
+    mutationFn: createPost,
+  });
   const onPost = () => {
-    console.warn(`Posting: ${post}`);
-    setPost("");
+    let options: any = [];
+    if (fields && fields.length > 0) {
+      options = fields.map((field) => {
+        return {
+          option: field,
+        };
+      });
+    }
+
+    mutate({
+      content: post?.content || "",
+      tag: post?.tag || "",
+      poll: {
+        question: post?.poll?.question || "",
+        options: options || [],
+        allowMultiple: isChecked,
+      },
+    });
     router.back();
   };
+
+  if (isError) {
+    console.log(error, "errorrewrwerwerewr");
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -32,6 +63,8 @@ const NewPost = () => {
         <Link href="/" asChild>
           <Pressable>{({ pressed }) => <Text>Cancel</Text>}</Pressable>
         </Link>
+
+        {isPending ? <ActivityIndicator size="small" color="white" /> : null}
 
         <Pressable onPress={onPost}>
           {({ pressed }) => <Text>Post</Text>}
@@ -47,21 +80,18 @@ const NewPost = () => {
           multiline={true}
           numberOfLines={3}
           style={styles.textArea}
-          value={post}
-          onChangeText={setPost}
+          value={post?.content}
+          onChangeText={(text) => setPost({ ...post, content: text })}
         />
         <TextInput
-          placeholder={
-            "Keep it relevant. If the community flags your post for going off topic it will be invisible to the communtiy."
-          }
+          placeholder={"@ Tag Company / Job Title"}
           placeholderTextColor="#fff"
-          multiline={true}
-          numberOfLines={5}
-          style={styles.textArea}
-          value={post}
-          onChangeText={setPost}
+          value={post?.tag}
+          onChangeText={(text) => setPost({ ...post, tag: text })}
+          style={styles.input}
         />
-        <Text>Choose a community</Text>
+
+        <View>{fields.length > 0 ? <Text>Poll Added</Text> : null}</View>
       </View>
       <Link href="/modal" asChild>
         <Pressable style={styles.floatingButton}>
@@ -94,12 +124,15 @@ const styles = StyleSheet.create({
   textArea: {
     height: "25%",
     color: "white",
-    flex: 1,
     padding: 10,
     textAlignVertical: "top",
     borderBottomColor: "gray",
     borderBottomWidth: StyleSheet.hairlineWidth,
     lineHeight: 25,
+  },
+  input: {
+    paddingTop: 10,
+    color: "white",
   },
   floatingButton: {
     flexDirection: "row",

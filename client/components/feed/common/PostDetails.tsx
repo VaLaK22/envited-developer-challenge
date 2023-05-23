@@ -8,7 +8,7 @@ interface PostProps {
   post: PostType;
 }
 
-const Post = ({ post }: PostProps) => {
+const PostDetails = ({ post }: PostProps) => {
   return (
     <SafeAreaView
       style={{
@@ -74,7 +74,7 @@ const Post = ({ post }: PostProps) => {
   );
 };
 
-export default Post;
+export default PostDetails;
 
 const styles = StyleSheet.create({
   container: {

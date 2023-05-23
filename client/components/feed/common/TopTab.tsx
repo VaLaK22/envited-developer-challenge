@@ -2,25 +2,26 @@ import { View, Text } from "../../Themed";
 import { StyleSheet } from "react-native";
 import { useState } from "react";
 
-const TopTab = () => {
-  const [activeTab, setActiveTab] = useState("Jobs");
+interface TopTabProps {
+  activeTab: "home" | "popular";
+  setActiveTab: (activeTab: "home" | "popular") => void;
+}
+
+const TopTab = ({ activeTab, setActiveTab }: TopTabProps) => {
   return (
     <View style={styles.container}>
-      <Text
-        style={activeTab === "Jobs" ? styles.active : styles.notActive}
-        onPress={() => setActiveTab("Jobs")}
-      >
+      <Text style={styles.notActive} disabled={true}>
         JOBS
       </Text>
       <Text
-        style={activeTab === "Home" ? styles.active : styles.notActive}
-        onPress={() => setActiveTab("Home")}
+        style={activeTab === "home" ? styles.active : styles.notActive}
+        onPress={() => setActiveTab("home")}
       >
         HOME
       </Text>
       <Text
-        style={activeTab === "Popular" ? styles.active : styles.notActive}
-        onPress={() => setActiveTab("Popular")}
+        style={activeTab === "popular" ? styles.active : styles.notActive}
+        onPress={() => setActiveTab("popular")}
       >
         POPULAR
       </Text>

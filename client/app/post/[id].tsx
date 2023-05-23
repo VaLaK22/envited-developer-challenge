@@ -1,17 +1,27 @@
 import { Text } from "../../components/Themed";
-import Post from "../../components/feed/common/Post";
-import posts from "../../assets/data/posts";
+import PostDetails from "../../components/feed/common/PostDetails";
 import { useSearchParams } from "expo-router";
+import { useQuery } from "@tanstack/react-query";
+import { getPost } from "../../lib/api/posts";
+import { ActivityIndicator } from "react-native";
 const post = () => {
   const { id } = useSearchParams();
 
-  const post = posts.find((post) => post.id === id);
+  const {
+    isLoading,
+    error,
+    data: post,
+  } = useQuery({
+    queryKey: ["post", id],
+    queryFn: () => getPost(id as string),
+  });
 
-  if (!post) {
+  if (error) {
     return <Text>Post not found</Text>;
   }
+  if (isLoading) return <ActivityIndicator />;
 
-  return <Post post={post} />;
+  return <PostDetails post={post} />;
 };
 
 export default post;

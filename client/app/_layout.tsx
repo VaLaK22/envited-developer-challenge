@@ -9,6 +9,10 @@ import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { useColorScheme, Button } from "react-native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MyContextProvider } from "../store/poll-context";
+
+const queryClient = new QueryClient();
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -44,20 +48,28 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <StatusBar style={"light"} />
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-          <Stack.Screen
-            name="post/[id]"
-            options={{
-              title: "",
-            }}
-          />
-        </Stack>
+        <MyContextProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="modal"
+              options={{
+                presentation: "modal",
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="post/[id]"
+              options={{
+                title: "",
+              }}
+            />
+          </Stack>
+        </MyContextProvider>
       </ThemeProvider>
-    </>
+    </QueryClientProvider>
   );
 }
