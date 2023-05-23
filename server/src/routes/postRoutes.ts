@@ -56,6 +56,9 @@ router.get("/home", async (req, res) => {
         },
       },
       poll: true,
+      _count: {
+        select: { comments: true },
+      },
     },
   });
   res.json(allPosts);
@@ -75,6 +78,9 @@ router.get("/popular", async (req, res) => {
           },
         },
         poll: true,
+        _count: {
+          select: { comments: true },
+        },
       },
       orderBy: [
         {
