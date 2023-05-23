@@ -1,6 +1,5 @@
 import { StyleSheet, Image, Pressable, SafeAreaView } from "react-native";
 import { View, Text } from "../../../components/Themed";
-import posts from "../../../assets/data/posts";
 import { Post as PostType } from "../../../types";
 import { FontAwesome, Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import { Link } from "expo-router";
