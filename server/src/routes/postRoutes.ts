@@ -92,7 +92,7 @@ router.get("/popular", async (req, res) => {
 });
 
 // get one post
-router.get("/:id", async (req, res) => {
+router.get("/id/:id", async (req, res) => {
   const { id } = req.params;
   console.log("Query post with id: ", id);
 
