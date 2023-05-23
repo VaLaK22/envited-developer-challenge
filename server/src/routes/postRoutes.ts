@@ -44,7 +44,7 @@ router.post("/", async (req, res) => {
 });
 
 // list post
-router.get("/", async (req, res) => {
+router.get("/home", async (req, res) => {
   const allPosts = await prisma.post.findMany({
     include: {
       user: {
