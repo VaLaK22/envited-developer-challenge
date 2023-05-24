@@ -28,7 +28,7 @@ function generateAuthToken(tokenId: number | string): string {
 // Create a user, if it doesn't exist,
 // generate the emailToken and send it to their email
 router.post("/login", async (req, res) => {
-  const { email, username } = req.body;
+  const { email, username = "" } = req.body;
 
   // generate token
   const emailToken = generateEmailToken();
@@ -58,7 +58,6 @@ router.post("/login", async (req, res) => {
     });
 
     console.log(createdToken);
-    // TODO send emailToken to user's email
     await sendEmailToken(email, emailToken);
     res.sendStatus(200);
   } catch (e) {
@@ -94,8 +93,6 @@ router.post("/authenticate", async (req, res) => {
   if (dbEmailToken?.user?.email !== email) {
     return res.sendStatus(401);
   }
-
-  // Here we validated that the user is the owner of the email
 
   // generate an API token
   const expiration = new Date(

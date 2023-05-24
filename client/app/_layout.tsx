@@ -67,6 +67,16 @@ function RootLayoutNav() {
                 title: "",
               }}
             />
+            <Stack.Screen
+              name="(auth)/signIn"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="(auth)/authenticate"
+              options={{
+                title: "Authenticate",
+              }}
+            />
           </Stack>
         </MyContextProvider>
       </ThemeProvider>
