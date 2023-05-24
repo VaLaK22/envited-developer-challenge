@@ -45,12 +45,12 @@ const Post = ({ post }: PostProps) => {
           <View style={styles.mainContainer}>
             <View style={styles.postHeaderContainer}>
               <Text style={styles.name}>{post?.user?.name}</Text>
-              <Text style={styles.time}>2h</Text>
+              <Text style={styles.time}>
+                {post.createdAt?.slice(0, 10) || "1h"}
+              </Text>
             </View>
             <View style={styles.postHeaderContainer}>
-              <Text style={styles.userName}>
-                {post?.user?.username} · {post?.user?.username}
-              </Text>
+              <Text style={styles.userName}>Envited · Envited</Text>
             </View>
             <Text style={styles.content}>{post.content}</Text>
             {post?.image ? (

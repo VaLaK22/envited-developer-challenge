@@ -13,10 +13,18 @@ const Poll = ({ poll }: PollProps) => {
   const [selected, setSelected] = useState<boolean[]>(
     Array(poll?.options?.length).fill(false)
   );
-  const [selectedOption, setSelectedOption] = useState<string>("");
+  const [selectedOption, setSelectedOption] = useState<string[]>([]);
   const handlePoll = (pollId: string, index: number) => {
-    setSelected(selected.map((item, i) => (i === index ? !item : item)));
-    setSelectedOption(pollId);
+    console.log(poll.allowMultiple, "poll.allowMultiple");
+    if (poll.allowMultiple == false) {
+      setSelected(Array(poll?.options?.length).fill(false));
+
+      setSelected(selected.map((item, i) => (i === index ? !item : item)));
+    } else {
+      setSelected(selected.map((item, i) => (i === index ? !item : item)));
+    }
+    console.log(poll.allowMultiple, "poll.allowMultiple");
+    setSelectedOption((prv) => [...prv, pollId]);
   };
 
   return (
@@ -35,9 +43,6 @@ const Poll = ({ poll }: PollProps) => {
           <Text>Select only one answer</Text>
         )}
         <View>
-          <Text>
-            {poll?.options ? poll?.options[0]?.option : "not found"} length
-          </Text>
           {poll?.options?.map((option, index) => (
             <View style={styles.pollOptionMainContainer} key={option.id}>
               <View style={styles.pollOptionContainer}>
