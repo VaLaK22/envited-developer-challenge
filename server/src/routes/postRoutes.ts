@@ -27,7 +27,8 @@ router.post("/", async (req, res) => {
               })),
             },
             question: poll.question,
-            participants: 3,
+            participants: poll.participants,
+            allowMultiple: poll.allowMultiple,
           },
         },
         title: "title",
@@ -101,22 +102,27 @@ router.get("/popular", async (req, res) => {
 // get one post
 router.get("/id/:id", async (req, res) => {
   const { id } = req.params;
-
-  const post = await prisma.post.findUnique({
-    where: { id: id },
-    include: { user: true, comments: true, poll: true },
-  });
-  if (!post) {
-    return res.status(404).json({ error: "post not found!" });
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id: id },
+      include: {
+        user: true,
+        comments: true,
+        poll: {
+          include: {
+            options: true,
+          },
+        },
+        _count: true,
+      },
+    });
+    if (!post) {
+      return res.status(404).json({ error: "post not found!" });
+    }
+    res.json(post);
+  } catch (error) {
+    res.status(400).json({ error: "Error" });
   }
-
-  res.json(post);
-});
-
-// update post
-router.put("/:id", (req, res) => {
-  const { id } = req.params;
-  res.status(501).json({ error: `Not Implemented: ${id}` });
 });
 
 // delete post
@@ -124,6 +130,45 @@ router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   await prisma.post.delete({ where: { id: id } });
   res.sendStatus(200);
+});
+
+// Like post
+router.put("/like/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const post = await prisma.post.update({
+      where: { id: id },
+      data: {
+        likes: {
+          increment: 1,
+        },
+      },
+    });
+    res.status(200).json(post);
+  } catch (e) {
+    res.status(400).json({ error: e });
+  }
+});
+
+// Unlike post
+
+// view post
+router.put("/view/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const post = await prisma.post.update({
+      where: { id: id },
+      data: {
+        views: {
+          increment: 1,
+        },
+      },
+    });
+    res.status(200).json(post);
+  } catch (e) {
+    res.status(400).json({ error: e });
+  }
 });
 
 export default router;

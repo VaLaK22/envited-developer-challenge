@@ -17,7 +17,6 @@ export const authenticate = async (data: {
   email: string;
   emailToken: string;
 }) => {
-  console.warn("authenticate");
   const res = await fetch(`${API_URL_LOCAL}/auth/authenticate`, {
     method: "POST",
     headers: {

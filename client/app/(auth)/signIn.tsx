@@ -41,6 +41,10 @@ const SignIn = () => {
   };
 
   const onSignin = () => {
+    if (email.length > 0 || !isValidEmail(email)) {
+      setError("Email is invalid");
+      return;
+    }
     mutate({ email });
   };
 

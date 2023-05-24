@@ -9,9 +9,8 @@ import {
 import { useContext, useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { createPost } from "../../lib/api/posts";
-import { Post as postType } from "../../types";
 import MyContext from "../../store/poll-context";
 
 const user = {
@@ -28,14 +27,16 @@ const NewPost = () => {
 
   const router = useRouter();
 
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
 
-  const { mutateAsync, isError, isPending, error } = useMutation({
+  const { mutate, isError, isPending, error } = useMutation({
     mutationFn: createPost,
     onSuccess: () => {
+      rest();
       queryClient.invalidateQueries({
         queryKey: ["posts"],
       });
+      router.back();
     },
   });
 
@@ -62,16 +63,11 @@ const NewPost = () => {
       allowMultiple: isChecked,
     };
 
-    try {
-      await mutateAsync({
-        content: content,
-        tag: tag,
-        poll: poll,
-      });
-      router.back();
-    } catch (error) {
-      console.warn("Error creating post");
-    }
+    mutate({
+      content: content,
+      tag: tag,
+      poll: poll,
+    });
   };
 
   if (isError) {

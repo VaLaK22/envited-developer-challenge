@@ -1,4 +1,9 @@
-import { TextInput, Pressable, StyleSheet } from "react-native";
+import {
+  TextInput,
+  Pressable,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { View, Text } from "../../components/Themed";
 import React, { useState, useContext } from "react";
 import { useSearchParams, useRouter } from "expo-router";
@@ -38,6 +43,7 @@ const Authenticate = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Enter the 8-digit code from your email</Text>
+      {isError ? <Text style={styles.error}>{error.message}</Text> : null}
 
       <TextInput
         placeholder="Code"
@@ -50,6 +56,7 @@ const Authenticate = () => {
       <Pressable style={styles.button} onPress={onConfirm}>
         <Text style={styles.button}>Confirm</Text>
       </Pressable>
+      {isPending ? <ActivityIndicator /> : null}
     </View>
   );
 };
@@ -77,6 +84,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginVertical: 10,
     width: "90%",
+    color: "white",
   },
   button: {
     backgroundColor: "#e33062",

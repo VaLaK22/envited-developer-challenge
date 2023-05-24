@@ -3,11 +3,30 @@ import { View, Text } from "../../../components/Themed";
 import { Post as PostType } from "../../../types";
 import { FontAwesome, Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import { Link } from "expo-router";
+import { likePost } from "../../../lib/api/posts";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 interface PostProps {
   post: PostType;
 }
 
 const Post = ({ post }: PostProps) => {
+  const queryClient = useQueryClient();
+
+  const { mutate, isError, isPending, error } = useMutation({
+    mutationFn: likePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["posts"],
+      });
+    },
+  });
+
+  const onLike = async () => {
+    if (!post.id) return;
+    mutate(post.id);
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -34,15 +53,15 @@ const Post = ({ post }: PostProps) => {
               </Text>
             </View>
             <Text style={styles.content}>{post.content}</Text>
+            {post?.image ? (
+              <Image
+                source={require("../../../assets/images/jeff.jpeg")}
+                style={styles.image}
+              />
+            ) : null}
           </View>
         </Pressable>
       </Link>
-      {post?.image ? (
-        <Image
-          source={require("../../../assets/images/jeff.jpeg")}
-          style={styles.image}
-        />
-      ) : null}
       {post?.poll ? (
         <View style={styles.pollMainContainer}>
           <View style={styles.pollContainer}>
@@ -56,10 +75,10 @@ const Post = ({ post }: PostProps) => {
       ) : null}
 
       <View style={styles.iconsContainer}>
-        <View style={styles.iconContainer}>
+        <Pressable style={styles.iconContainer} onPress={onLike}>
           <FontAwesome name="heart-o" size={24} color="grey" />
           <Text style={styles.statsLabel}>{post.likes}</Text>
-        </View>
+        </Pressable>
         <View style={styles.iconContainer}>
           <FontAwesome name="comment-o" size={24} color="grey" />
           <Text style={styles.statsLabel}>{post.coutnt?.comments || 0}</Text>
@@ -111,9 +130,10 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    aspectRatio: 16 / 9,
+    height: 200,
     borderRadius: 15,
     marginVertical: 10,
+    resizeMode: "cover",
   },
   pollMainContainer: {
     marginVertical: 10,

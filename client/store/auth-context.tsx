@@ -27,9 +27,9 @@ export const AuthContextProvider = ({
     if (!isAuthGroup && !authToken) {
       router.replace("/signin");
     } else if (isAuthGroup && authToken) {
-      router.replace("/");
+      router.replace("/home");
     }
-  }, []);
+  }, [segments, authToken]);
 
   useEffect(() => {
     const getAuthToken = async () => {
