@@ -18,18 +18,21 @@ const Authenticate = () => {
   } = useMutation({
     mutationFn: authenticate,
     onSuccess: () => {
-      router.push({ pathname: "/authenticate", params: { email } });
+      router.push({ pathname: "/index" });
     },
   });
 
   const onConfirm = async () => {
+    if (typeof email !== "string") {
+      throw new Error("Email is not a string");
+    }
     console.warn("Confirming with", code, email);
-    await mutateAsync({ email, code });
+    await mutateAsync({ email, emailToken: code });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Enter the 6-digit code from your email</Text>
+      <Text style={styles.label}>Enter the 8-digit code from your email</Text>
 
       <TextInput
         placeholder="Code"

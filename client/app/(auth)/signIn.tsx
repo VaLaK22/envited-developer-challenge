@@ -41,8 +41,6 @@ const SignIn = () => {
   };
 
   const onSignin = async () => {
-    console.warn("Signing in with", email);
-
     await mutateAsync({ email });
   };
 

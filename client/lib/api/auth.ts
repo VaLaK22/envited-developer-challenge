@@ -1,6 +1,5 @@
 import { API_URL_LOCAL } from "./constants";
 export const login = async (data: { email: string }) => {
-  console.log(data);
   const res = await fetch(`${API_URL_LOCAL}/auth/login`, {
     method: "POST",
     headers: {
@@ -8,7 +7,6 @@ export const login = async (data: { email: string }) => {
     },
     body: JSON.stringify(data),
   });
-  console.log(res);
   if (!res.ok || res.status !== 200) {
     throw new Error("Login failed");
   }

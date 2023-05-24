@@ -59,7 +59,8 @@ router.post("/login", async (req, res) => {
 
     console.log(createdToken);
     await sendEmailToken(email, emailToken);
-    res.sendStatus(200);
+
+    res.status(200).json({ email: createdToken.user.email });
   } catch (e) {
     console.log(e);
     res
