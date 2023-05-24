@@ -57,10 +57,15 @@ router.post("/login", async (req, res) => {
       },
     });
 
-    console.log(createdToken);
+    const isEmailExists = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
     await sendEmailToken(email, emailToken);
 
-    res.status(200).json({ email: createdToken.user.email });
+    res.status(200).json({ email: createdToken.user.email, isEmailExists });
   } catch (e) {
     console.log(e);
     res
