@@ -36,41 +36,25 @@ const getPost = async (id: string) => {
   }
 };
 const createPost = async (data: postType) => {
-  console.log(data, "data");
+  try {
+    const rawResponse = await fetch(
+      `https://envited-developer-challenge-production.up.railway.app/post`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    const content = await rawResponse.json();
 
-  const rawResponse = await fetch(
-    `https://envited-developer-challenge-production.up.railway.app/post`,
-    {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        authorization: `Bearer ${authToken}`,
-      },
-      body: JSON.stringify(data),
-    }
-  );
-  const content = await rawResponse.json();
-
-  console.log(content);
-  return content;
-  // try {
-  //   const response = await fetch(`${API_URL_LOCAL}/post`, {
-  //     method: "POST",
-  //     headers: {
-  //       Authorization: `Bearer ${authToken}`,
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(data),
-  //   });
-
-  //   if (!response.ok || response.status !== 200) {
-  //     throw new Error("Error creating post");
-  //   }
-  //   return await response.json();
-  // } catch (error) {
-  //   throw new Error("Error creating post");
-  // }
+    return content;
+  } catch (error) {
+    throw new Error("Error creating post");
+  }
 };
 
 export { listPosts, getPost, createPost };

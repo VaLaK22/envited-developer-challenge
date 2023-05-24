@@ -4,13 +4,12 @@ import {
   TextInput,
   SafeAreaView,
   Pressable,
-  StatusBar,
   ActivityIndicator,
 } from "react-native";
 import { useContext, useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
-import { useMutation } from "@tanstack/react-query";
+import { QueryClient, useMutation } from "@tanstack/react-query";
 import { createPost } from "../../lib/api/posts";
 import { Post as postType } from "../../types";
 import MyContext from "../../store/poll-context";
@@ -23,16 +22,27 @@ const user = {
 };
 
 const NewPost = () => {
-  const [post, setPost] = useState<postType>();
+  const [content, setContent] = useState<string>("");
+  const [tag, setTag] = useState<string>("");
   const { isChecked, fields, rest } = useContext(MyContext);
 
   const router = useRouter();
 
-  const { mutate, isError, isPending, error } = useMutation({
+  const queryClient = new QueryClient();
+
+  const { mutateAsync, isError, isPending, error } = useMutation({
     mutationFn: createPost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["posts"],
+      });
+    },
   });
-  const onPost = () => {
-    let options: any = [];
+
+  const onPost = async () => {
+    let options: {
+      option: string;
+    }[] = [];
     if (fields && fields.length > 0) {
       options = fields.map((field) => {
         return {
@@ -40,17 +50,29 @@ const NewPost = () => {
         };
       });
     }
+    const poll: {
+      question: string;
+      options: {
+        option: string;
+      }[];
+      allowMultiple: boolean;
+    } = {
+      question: "",
+      options: options,
+      allowMultiple: isChecked,
+    };
 
-    mutate({
-      content: post?.content || "",
-      tag: post?.tag || "",
-      poll: {
-        question: post?.poll?.question || "",
-        options: options || [],
-        allowMultiple: isChecked,
-      },
-    });
-    router.back();
+    try {
+      await mutateAsync({
+        content: content,
+        tag: tag,
+        poll: poll,
+      });
+      router.back();
+    } catch (error) {
+      console.log(error);
+      console.warn("Error creating post");
+    }
   };
 
   if (isError) {
@@ -80,14 +102,14 @@ const NewPost = () => {
           multiline={true}
           numberOfLines={3}
           style={styles.textArea}
-          value={post?.content}
-          onChangeText={(text) => setPost({ ...post, content: text })}
+          value={content}
+          onChangeText={(text) => setContent(text)}
         />
         <TextInput
           placeholder={"@ Tag Company / Job Title"}
           placeholderTextColor="#fff"
-          value={post?.tag}
-          onChangeText={(text) => setPost({ ...post, tag: text })}
+          value={tag}
+          onChangeText={(text) => setTag(text)}
           style={styles.input}
         />
 
