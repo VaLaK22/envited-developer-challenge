@@ -18,14 +18,21 @@ const SignIn = () => {
   const router = useRouter();
 
   const {
-    mutateAsync,
+    mutate,
     isError,
     isPending,
     error: signInError,
   } = useMutation({
     mutationFn: login,
-    onSuccess: () => {
-      router.push({ pathname: "/authenticate", params: { email } });
+    onSuccess: (res) => {
+      console.log(res, "res on signin on success");
+      const { isEmailExists } = res;
+      if (isEmailExists) {
+        console.warn(isEmailExists, "1");
+        router.push({ pathname: "/authenticate", params: { email } });
+      } else {
+        console.warn(isEmailExists, "2");
+      }
     },
   });
   const [email, setEmail] = useState("");
@@ -40,8 +47,8 @@ const SignIn = () => {
     setEmail(text);
   };
 
-  const onSignin = async () => {
-    await mutateAsync({ email });
+  const onSignin = () => {
+    mutate({ email });
   };
 
   return (
@@ -53,6 +60,7 @@ const SignIn = () => {
       <TextInput
         placeholder="Email"
         style={styles.input}
+        placeholderTextColor="white"
         value={email}
         onChangeText={handleChange}
       />

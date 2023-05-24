@@ -1,33 +1,40 @@
 import { TextInput, Pressable, StyleSheet } from "react-native";
 import { View, Text } from "../../components/Themed";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useSearchParams, useRouter } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
 import { authenticate } from "../../lib/api/auth";
+import AuthContext from "../../store/auth-context";
 
 const Authenticate = () => {
+  const { updateAuthToken } = useContext(AuthContext);
+
   const router = useRouter();
   const { email } = useSearchParams();
   const [code, setCode] = useState("");
 
   const {
-    mutateAsync,
+    mutate,
     isError,
     isPending,
     error: error,
   } = useMutation({
     mutationFn: authenticate,
-    onSuccess: () => {
+    onSuccess: async (res) => {
+      console.log(res, "res on Authenticate on success");
+      const { authToken } = res;
+      // await SecureStore.setItemAsync("token", authToken);
+      await updateAuthToken(authToken);
       router.push({ pathname: "/index" });
     },
   });
 
-  const onConfirm = async () => {
+  const onConfirm = () => {
     if (typeof email !== "string") {
       throw new Error("Email is not a string");
     }
     console.warn("Confirming with", code, email);
-    await mutateAsync({ email, emailToken: code });
+    mutate({ email, emailToken: code });
   };
 
   return (
@@ -37,6 +44,7 @@ const Authenticate = () => {
       <TextInput
         placeholder="Code"
         style={styles.input}
+        placeholderTextColor="white"
         value={code}
         onChangeText={setCode}
       />
