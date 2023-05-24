@@ -1,21 +1,17 @@
 import { StyleSheet, Image, Pressable, SafeAreaView } from "react-native";
 import { View, Text } from "../../../components/Themed";
 import { Post as PostType } from "../../../types";
-import { FontAwesome, Ionicons, FontAwesome5 } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { likePost, viewPost } from "../../../lib/api/posts";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import Poll from "./Poll";
 interface PostProps {
   post: PostType;
 }
 
 const PostDetails = ({ post }: PostProps) => {
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-    console.log("post", post);
-  }, []);
 
   const {
     mutate: mutateLikes,
@@ -36,7 +32,7 @@ const PostDetails = ({ post }: PostProps) => {
     isPending: isPendingView,
     error: viewError,
   } = useMutation({
-    mutationFn: likePost,
+    mutationFn: viewPost,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["posts"],
@@ -87,36 +83,7 @@ const PostDetails = ({ post }: PostProps) => {
           ) : null}
         </View>
       </View>
-      {post?.poll ? (
-        <View style={styles.pollMainContainer}>
-          <View style={styles.pollContainer}>
-            <FontAwesome5 name="poll" size={24} color="#BF6A63" />
-            <Text style={styles.pollQuestion}>Poll</Text>
-            <Text style={styles.pollParticipants}>
-              {post?.poll.participants} Participants
-            </Text>
-          </View>
-          {post?.poll?.allowMultiple ? (
-            <Text style={styles.pollAllowMultiple}>Select answer</Text>
-          ) : (
-            <Text>Select only one answer</Text>
-          )}
-          <View>
-            <Text>
-              {post?.poll?.options
-                ? post?.poll?.options[0]?.option
-                : "not found"}{" "}
-              length
-            </Text>
-            {post?.poll?.options?.map((option, index) => (
-              <View style={styles.pollOptionContainer} key={index}>
-                <Text style={styles.pollOptionText}>{option.option}</Text>
-                <Text style={styles.pollOptionVotes}>{option.votes} Votes</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-      ) : null}
+      {post?.poll ? <Poll poll={post.poll} /> : null}
       <View style={styles.iconsContainer}>
         <Pressable style={styles.iconContainer} onPress={onLike}>
           <FontAwesome name="heart-o" size={24} color="grey" />
@@ -177,65 +144,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginVertical: 10,
     resizeMode: "cover",
-  },
-  pollMainContainer: {
-    marginVertical: 10,
-    marginHorizontal: 25,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "#262628",
-    borderRadius: 10,
-    padding: 10,
-    width: "100%",
-    marginBottom: 5,
-    paddingVertical: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  pollContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  pollAllowMultiple: {
-    color: "#E7E7E8",
-    fontSize: 16,
-  },
-  pollQuestion: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#BF6A63",
-    paddingHorizontal: 5,
-    borderRightWidth: StyleSheet.hairlineWidth,
-    borderRightColor: "grey",
-  },
-  pollParticipants: {
-    fontSize: 16,
-    fontWeight: "400",
-    color: "#E7E7E8",
-    paddingLeft: 10,
-  },
-  pollOptionsContainer: {
-    width: "100%",
-    paddingHorizontal: 10,
-    flex: 1,
-  },
-  pollOptionContainer: {
-    flexDirection: "column",
-  },
-  pollOptionText: {
-    color: "#E7E7E8",
-    fontSize: 16,
-    fontWeight: "400",
-  },
-  pollOptionVotes: {
-    color: "#E7E7E8",
-    fontSize: 16,
-    fontWeight: "400",
   },
 
   iconsContainer: {
