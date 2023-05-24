@@ -25,14 +25,7 @@ const SignIn = () => {
   } = useMutation({
     mutationFn: login,
     onSuccess: (res) => {
-      console.log(res, "res on signin on success");
-      const { isEmailExists } = res;
-      if (isEmailExists) {
-        console.warn(isEmailExists, "1");
-        router.push({ pathname: "/authenticate", params: { email } });
-      } else {
-        console.warn(isEmailExists, "2");
-      }
+      router.push({ pathname: "/authenticate", params: { email } });
     },
   });
   const [email, setEmail] = useState("");

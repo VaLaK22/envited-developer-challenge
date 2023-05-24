@@ -72,7 +72,7 @@ function RootLayoutNav() {
                 }}
               />
               <Stack.Screen
-                name="(auth)/signIn"
+                name="(auth)/signin"
                 options={{ headerShown: false }}
               />
               <Stack.Screen

@@ -65,9 +65,10 @@ router.post("/login", async (req, res) => {
 
     await sendEmailToken(email, emailToken);
 
-    res.status(200).json({ email: createdToken.user.email, isEmailExists });
+    res
+      .status(200)
+      .json({ email: createdToken.user.email, isEmailExists: !!isEmailExists });
   } catch (e) {
-    console.log(e);
     res
       .status(400)
       .json({ error: "Couldn't start the authentication process" });

@@ -70,7 +70,6 @@ const NewPost = () => {
       });
       router.back();
     } catch (error) {
-      console.log(error);
       console.warn("Error creating post");
     }
   };

@@ -13,9 +13,6 @@ router.post("/", async (req, res) => {
   const user = req.user;
   const { id } = user;
 
-  console.log("req.body", req.body);
-  console.log("poll", poll);
-
   try {
     const result = await prisma.post.create({
       data: {
@@ -41,7 +38,6 @@ router.post("/", async (req, res) => {
     });
     res.json(result);
   } catch (e) {
-    console.log(e);
     res.status(400).json({ error: e });
   }
 });
@@ -105,7 +101,6 @@ router.get("/popular", async (req, res) => {
 // get one post
 router.get("/id/:id", async (req, res) => {
   const { id } = req.params;
-  console.log("Query post with id: ", id);
 
   const post = await prisma.post.findUnique({
     where: { id: id },

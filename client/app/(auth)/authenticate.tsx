@@ -21,11 +21,10 @@ const Authenticate = () => {
   } = useMutation({
     mutationFn: authenticate,
     onSuccess: async (res) => {
-      console.log(res, "res on Authenticate on success");
       const { authToken } = res;
       // await SecureStore.setItemAsync("token", authToken);
-      await updateAuthToken(authToken);
-      router.push({ pathname: "/index" });
+      updateAuthToken(authToken);
+      router.push({ pathname: "/home" });
     },
   });
 
@@ -33,7 +32,6 @@ const Authenticate = () => {
     if (typeof email !== "string") {
       throw new Error("Email is not a string");
     }
-    console.warn("Confirming with", code, email);
     mutate({ email, emailToken: code });
   };
 

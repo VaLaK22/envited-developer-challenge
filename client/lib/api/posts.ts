@@ -1,7 +1,9 @@
 import { API_URL, authToken, API_URL_LOCAL } from "./constants";
 import { Post as postType } from "../../types";
+import * as SecureStore from "expo-secure-store";
 
 const listPosts = async (activeTab: "home" | "popular") => {
+  const token = await SecureStore.getItemAsync("token");
   try {
     const response = await fetch(`${API_URL}/post/${activeTab}`, {
       headers: {
@@ -21,6 +23,7 @@ const listPosts = async (activeTab: "home" | "popular") => {
 };
 
 const getPost = async (id: string) => {
+  const token = await SecureStore.getItemAsync("token");
   try {
     const response = await fetch(`${API_URL}/post/id/${id}`, {
       headers: {
@@ -36,6 +39,7 @@ const getPost = async (id: string) => {
   }
 };
 const createPost = async (data: postType) => {
+  const token = await SecureStore.getItemAsync("token");
   try {
     const rawResponse = await fetch(
       `https://envited-developer-challenge-production.up.railway.app/post`,

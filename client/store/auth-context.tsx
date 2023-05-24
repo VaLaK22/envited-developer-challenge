@@ -29,7 +29,7 @@ export const AuthContextProvider = ({
     } else if (isAuthGroup && authToken) {
       router.replace("/");
     }
-  }, [authToken, segments]);
+  }, []);
 
   useEffect(() => {
     const getAuthToken = async () => {
