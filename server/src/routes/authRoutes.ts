@@ -5,7 +5,7 @@ import { sendEmailToken } from "../services/emailService";
 require("dotenv").config();
 
 const EMAIL_TOKEN_EXPIRATION_MINUTES = 10;
-const AUTHENTICATION_EXPIRATION_HOURS = 12;
+const AUTHENTICATION_EXPIRATION_HOURS = 24 * 30;
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
 const router = Router();
@@ -28,7 +28,7 @@ function generateAuthToken(tokenId: number | string): string {
 // Create a user, if it doesn't exist,
 // generate the emailToken and send it to their email
 router.post("/login", async (req, res) => {
-  const { email, username } = req.body;
+  const { email, username = "" } = req.body;
 
   // generate token
   const emailToken = generateEmailToken();
@@ -57,12 +57,18 @@ router.post("/login", async (req, res) => {
       },
     });
 
-    console.log(createdToken);
-    // TODO send emailToken to user's email
+    const isEmailExists = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
     await sendEmailToken(email, emailToken);
-    res.sendStatus(200);
+
+    res
+      .status(200)
+      .json({ email: createdToken.user.email, isEmailExists: !!isEmailExists });
   } catch (e) {
-    console.log(e);
     res
       .status(400)
       .json({ error: "Couldn't start the authentication process" });
@@ -94,8 +100,6 @@ router.post("/authenticate", async (req, res) => {
   if (dbEmailToken?.user?.email !== email) {
     return res.sendStatus(401);
   }
-
-  // Here we validated that the user is the owner of the email
 
   // generate an API token
   const expiration = new Date(

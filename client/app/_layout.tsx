@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { useColorScheme, Button } from "react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MyContextProvider } from "../store/poll-context";
+import { AuthContextProvider } from "../store/auth-context";
 
 const queryClient = new QueryClient();
 
@@ -48,28 +49,42 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <StatusBar style={"light"} />
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <MyContextProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="modal"
-              options={{
-                presentation: "modal",
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="post/[id]"
-              options={{
-                title: "",
-              }}
-            />
-          </Stack>
-        </MyContextProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <AuthContextProvider>
+      <QueryClientProvider client={queryClient}>
+        <StatusBar style={"light"} />
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <MyContextProvider>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="modal"
+                options={{
+                  presentation: "modal",
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="post/[id]"
+                options={{
+                  title: "",
+                }}
+              />
+              <Stack.Screen
+                name="(auth)/signin"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="(auth)/authenticate"
+                options={{
+                  title: "Authenticate",
+                }}
+              />
+            </Stack>
+          </MyContextProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </AuthContextProvider>
   );
 }

@@ -1,11 +1,14 @@
 import { API_URL, authToken, API_URL_LOCAL } from "./constants";
 import { Post as postType } from "../../types";
+import * as SecureStore from "expo-secure-store";
 
 const listPosts = async (activeTab: "home" | "popular") => {
+  const token = await SecureStore.getItemAsync("token");
+
   try {
-    const response = await fetch(`${API_URL}/post/${activeTab}`, {
+    const response = await fetch(`${API_URL_LOCAL}/post/${activeTab}`, {
       headers: {
-        Authorization: `Bearer ${authToken}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     if (!response.ok || response.status !== 200) {
@@ -21,10 +24,11 @@ const listPosts = async (activeTab: "home" | "popular") => {
 };
 
 const getPost = async (id: string) => {
+  const token = await SecureStore.getItemAsync("token");
   try {
-    const response = await fetch(`${API_URL}/post/id/${id}`, {
+    const response = await fetch(`${API_URL_LOCAL}/post/id/${id}`, {
       headers: {
-        Authorization: `Bearer ${authToken}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     if (!response.ok || response.status !== 200) {
@@ -36,41 +40,62 @@ const getPost = async (id: string) => {
   }
 };
 const createPost = async (data: postType) => {
-  console.log(data, "data");
-
-  const rawResponse = await fetch(
-    `https://envited-developer-challenge-production.up.railway.app/post`,
-    {
+  const token = await SecureStore.getItemAsync("token");
+  try {
+    const rawResponse = await fetch(`${API_URL_LOCAL}/post`, {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        authorization: `Bearer ${authToken}`,
+        authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data),
-    }
-  );
-  const content = await rawResponse.json();
+    });
+    const content = await rawResponse.json();
 
-  console.log(content);
-  return content;
-  // try {
-  //   const response = await fetch(`${API_URL_LOCAL}/post`, {
-  //     method: "POST",
-  //     headers: {
-  //       Authorization: `Bearer ${authToken}`,
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(data),
-  //   });
-
-  //   if (!response.ok || response.status !== 200) {
-  //     throw new Error("Error creating post");
-  //   }
-  //   return await response.json();
-  // } catch (error) {
-  //   throw new Error("Error creating post");
-  // }
+    return content;
+  } catch (error) {
+    throw new Error("Error creating post");
+  }
 };
 
-export { listPosts, getPost, createPost };
+//Like a post
+const likePost = async (id: string) => {
+  console.log("id", id);
+  const token = await SecureStore.getItemAsync("token");
+  try {
+    const response = await fetch(`${API_URL_LOCAL}/post/like/${id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok || response.status !== 200) {
+      throw new Error("Error liking post");
+    }
+    return await response.json();
+  } catch (error) {
+    throw new Error("Error liking post");
+  }
+};
+
+//View a post
+const viewPost = async (id: string) => {
+  const token = await SecureStore.getItemAsync("token");
+  try {
+    const response = await fetch(`${API_URL_LOCAL}/post/view/${id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok || response.status !== 200) {
+      throw new Error("Error liking post");
+    }
+    return await response.json();
+  } catch (error) {
+    throw new Error("Error liking post");
+  }
+};
+
+export { listPosts, getPost, createPost, likePost, viewPost };
